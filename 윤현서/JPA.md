@@ -78,9 +78,6 @@ EntityManager.find(entity.class, entity.id);
 3. 조회한 데이터로 Entity 생성 -> 1차 캐시에 저장 == 영속화
 4. Entity 반환
 
-영속성 컨텍스트는 애플리케이션이랑 db의 중간보관소인 줄 알았는데
-엔티티를 영구적으로 저장하는 환경이라고 정의하네..
-
 # 엔티티의 생명주기(Entity LifeCycle)
 
 -   비영속 (new/transient)
@@ -98,3 +95,8 @@ EntityManager.find(entity.class, entity.id);
 -   삭제 (remove)
     : 엔티티를 영속성 컨텍스트, DB에서 삭제
 -   remove(entity)
+
+영속성 컨텍스트는 애플리케이션이랑 db의 중간보관소인 줄 알았는데
+엔티티를 영구적으로 저장하는 환경이라고 정의하네..
+
+(아마 의도적으로 삭제하지 않는 한 영구적으로 가지고 있다는 뜻인 듯)
