@@ -20,8 +20,7 @@ public class Member {
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member") // 양방향 매핑으로 1대다 member가 1, order가 다, 연관관계 주인은 member
     private List<Order> order = new ArrayList<>();
-
 
 }
