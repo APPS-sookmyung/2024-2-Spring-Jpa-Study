@@ -134,3 +134,19 @@ EntityManager.find(entity.class, entity.id);
 # @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 
 -   persist(order)만 해줘도 persist(orderItems)가 종속돼서 같이 저장됨
+
+[섹션 6. 상품 도메인 개발]
+
+-   재고를 넣고 빼는 비즈니스 로직의 stockquantity를 가지고 있는 item 엔티티 도메인 안에 추가/감소 로직을 넣어 관리하기 편하도록 설정
+
+    -   응집력 향상
+    -   도메인 모델 패턴 (엔티티가 비즈니스 로직을 가지고 객체 지향의 특징을 적극 활용하는 것)
+    -   엔티티 밖 서비스 계층에서 처리하는 것 = 트랜잭션 스크립트 패턴
+    -   어떤 패턴이 유지보수에 용이한지 고민해보는 것이 필요함
+    -   각 패턴의 장단점이나 활용 분야를 찾아보는 게 좋을 것 같음
+
+-   id이 null = 새로 생성하는 객체
+
+    -   이미 있는 id에 save => update 개념
+
+-   트랜잭션 옵션은 메서드에 가까운게 우선권을 가짐
