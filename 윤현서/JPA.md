@@ -150,3 +150,111 @@ EntityManager.find(entity.class, entity.id);
     -   이미 있는 id에 save => update 개념
 
 -   트랜잭션 옵션은 메서드에 가까운게 우선권을 가짐
+
+    **도메인 모델 패턴**
+
+: 비즈니스 로직이 엔티티 안에 구성되어 서비스 계층은 엔티티에 필요한 역할을 위임함
+
+-   엔티티 안에 비즈니스 로직을 가지고 객체지향을 활용하는 기법
+-   주요 비즈니스 로직이 객체 내부에 캡슐화되어 있어 데이터와 메서드가 객체로 묶여 있음
+-   구현방법
+    → 비즈니스 영역에서 사용되는 객체 판별
+    → 객체가 제공해야 할 목록 추출
+    → 객체간의 관계 정립
+-   **도메인 모델 장점**
+    -   객체 지향에 기반한 재사용성, 확장성, 유지 보수의 편리함
+    -   도메인에 대한 직관적 표현이 가능해 코드를 이해하기 쉬움
+-   **도메인 모델 단점**
+    -   초기 설계가 어려움
+    -   객체와 데이터베이스 사이의 매핑에 대한 어려움
+    -   코드가 복잡해질 수 있음
+-   은행 입출금 예시
+
+    ```java
+    @Entity
+    public class Account {
+    	private String accountNumber;
+    	private double balance;
+
+    	public Account(String accountNumber, double balance){
+    		this.accountNumber = accountNumber;
+    		this.balance = balance;
+    	}
+
+    	public void deposit(double amount){
+    		if (amount <= 0){
+    			throw new IllegalArgumentException("must be positive");
+    		}
+    		this.balance += amount;
+    	}
+
+    	public void withdraw(double amount){
+    		if (amount > this.balance){
+    			throw new IllegalArgumentException("amount not enough");
+    		}
+    		this.balance -= amount;
+    	}
+    }
+    ```
+
+**트랜잭션 스크립트 패턴**
+
+: 서비스 계층에서 비즈니스 로직을 처리하는 것
+
+-   하나의 트랜잭션으로 구성된 로직
+-   단일 함수 / 단일 스크립트에서 처리하는 구조
+-   엔티티는 단순하게 데이터를 전달하는 역할만 수행함
+
+-   **트랜잭션 코드 장점**
+    -   구현이 쉬움
+    -   직관적임
+-   **트랜잭션 코드 단점**
+    -   비즈니스 로직이 확장될수록 코드가 복잡해짐
+    -   도메인 분석, 설계 개념이 약해 코드 중복을 막기 어려움
+    -   공통된 코드를 공통 모듈로 분리하지 않고 중복 코드를 발생시킬 위험이 있음
+    -
+-   **적합한 상황**
+    -   비즈니스 로직이 단순한 경우
+    -   CRUD 중심의 애플리케이션과 같이 적은 코드량이 요구되는 프로젝트
+    -   트랜잭션이 데이터베이스 내에서 독립적으로 실행되고, 공유 상태가 별로 없는 경우
+-   은행 입출금 예시
+
+    ```java
+    @Service
+    public class BankService {
+    // 서비스에서 로직이 구현됨
+        public void deposit(String accountNumber, double amount) {
+            if (!accounts.containsKey(accountNumber)) {
+                throw new IllegalArgumentException("Account not found.");
+            }
+            if (amount <= 0) {
+                throw new IllegalArgumentException("Deposit amount must be positive.");
+            }
+            accounts.put(accountNumber, accounts.get(accountNumber) + amount);
+        }
+
+        public void withdraw(String accountNumber, double amount) {
+            if (!accounts.containsKey(accountNumber)) {
+                throw new IllegalArgumentException("Account not found.");
+            }
+            if (amount > accounts.get(accountNumber)) {
+                throw new IllegalArgumentException("Insufficient funds.");
+            }
+            accounts.put(accountNumber, accounts.get(accountNumber) - amount);
+        }
+    }
+    ```
+
+**다른 디자인 패턴**
+
+1. 액티브 레코드 패턴
+    - 모든 query 메소드를 모델에 정의하고 객체의 저장, 제거, 조회 기능을 모델의 메소드를 통해 사용하는 패턴
+2. 테이블 모듈 패턴
+    - 데이터베이스에 있는 테이블마다 하나의 클래스에 대응하는 도메인 로직 구성
+    - 클래스의 단일 인스턴스는 데이터에 행동할 수 있는 다양한 프로시저를 포함함
+3. 서비스 레이어 패턴
+    - 서비스를 제공하는 레이어를 별도로 제공하는 구조
+    - 클라이언트들이 공통적으로 필요로 하는 기능을 제공해야 할 때 알맞은 구조
+    - 어플리케이션 로직을 담기 적당함
+4. 데이터 매퍼 패턴
+    - 모든 쿼리 메소드들을 별도의 클래스에 정의
