@@ -25,7 +25,6 @@ public class MemberServiceTest {
         Long saveId = memberService.join(member);
 
         assertEquals(member, memberRepository.findOne(saveId));
-
     }
 
     @Test(expected = IllegalStateException.class) // memberService.join(member2) 명령어를 실행하다가 예외가 발생해서 로직 튕겨나가는 걸 여기서 설정해줌 IllegalstateException이 터진다는 걸 알려줌
@@ -38,7 +37,6 @@ public class MemberServiceTest {
 
         memberService.join(member1);
         memberService.join(member1);
-
 
         fail("예외가 발생해야 한다."); // assert에서 기본적으로 제공해주는 것으로 위의 명령어에서 예외가 터져서 로직을 나가버려야 하는데 이 fail 문이 실행된다면 잘못 된 것이므로 페일을 실행시켜 준다.
     }
